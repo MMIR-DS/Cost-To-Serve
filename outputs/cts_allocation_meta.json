@@ -1,0 +1,46 @@
+{
+  "pools": {
+    "order_handling": {
+      "name": "Order Handling",
+      "activity": "Order entry, processing, validation, administration",
+      "primary_driver": "n_order_lines",
+      "driver_description": "Number of order lines (each line requires processing)",
+      "pool_cost": 250000.0,
+      "avoidable_pct": 0.7,
+      "rationale_size": "Share of Modeled CTS; calibrated so total CTS ≈ 10% of Net Sales.",
+      "alternative_drivers": ["n_orders"]
+    },
+    "distribution": {
+      "name": "Distribution",
+      "activity": "Shipment, loading, transportation, last-mile delivery",
+      "primary_driver": "total_freight",
+      "driver_description": "Observed freight value charged (proxy for logistics effort — not internal cost)",
+      "pool_cost": 600000.0,
+      "avoidable_pct": 0.8,
+      "rationale_size": "Largest pool share. Billed freight is a proxy, not platform logistics cost.",
+      "alternative_drivers": ["total_weight_g", "n_orders"]
+    },
+    "warehousing": {
+      "name": "Warehousing",
+      "activity": "Picking, packing, handling, storage, movement",
+      "primary_driver": "total_weight_g",
+      "driver_description": "Total product weight handled (proxy)",
+      "pool_cost": 400000.0,
+      "avoidable_pct": 0.4,
+      "rationale_size": "Physical-weight proxy; marketplace sellers often fulfill.",
+      "alternative_drivers": ["total_volume_cm3", "n_order_lines"]
+    },
+    "returns_waste": {
+      "name": "Returns / Non-Fulfillment",
+      "activity": "Non-fulfillment handling (canceled/unavailable proxy — not true physical returns)",
+      "primary_driver": "n_canceled_lines",
+      "driver_description": "Canceled / unavailable lines as non-fulfillment proxy",
+      "pool_cost": 100000.0,
+      "avoidable_pct": 0.9,
+      "rationale_size": "Small share; allocation to zero-revenue months is mechanical.",
+      "alternative_drivers": ["n_orders"]
+    }
+  },
+  "total_pool_cost": 1350000.0,
+  "note": "Pool sizes from config.py; reconciliations verify allocated + unallocated = pool."
+}
