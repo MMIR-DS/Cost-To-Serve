@@ -1,0 +1,22 @@
+{
+  "grain": "order",
+  "n_orders": 98199,
+  "thesis": "At plausible marketplace-like assumptions under pass-through freight, Modeled service cost is a small perturbation: ranks stay close to revenue, few signs flip. The tipping grid shows where that stops being true.",
+  "what_allocation_changes": {
+    "sign_flips_vs_product_contribution_only": 101,
+    "sign_flip_pct": 0.0010285237120540942,
+    "top_decile_overlap_vs_net_sales": 0.9690396170689479,
+    "rank_moves_more_than_10pct_of_n": 2184,
+    "rank_move_pct": 0.022240552347783583,
+    "spearman_contrib_vs_net_sales": 0.9930967635885143
+  },
+  "pass_through": {
+    "spearman_contrib_vs_net_sales": 0.9930967635885143,
+    "top_decile_overlap_vs_net_sales": 0.9690396170689479
+  },
+  "v1_sensitivity": {
+    "spearman_contrib_vs_net_sales": 0.9846626728227629,
+    "top_decile_overlap_vs_net_sales": 0.9513188715755169
+  },
+  "interpretation": "High Spearman means contribution order is close to a revenue ranking. Use the tipping grid to see when service cost stops being a small perturbation."
+}
