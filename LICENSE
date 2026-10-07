@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2026 Mohammad Mir
+Copyright (c) 2026 Project C — Cost-to-Serve portfolio prototype
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,3 +19,9 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+---
+
+Data notice: Olist Brazilian E-Commerce data is licensed under CC BY-NC-SA 4.0
+(Olist / Kaggle). This repository does not redistribute the full raw dataset;
+sample extracts are for non-commercial portfolio use with attribution.
