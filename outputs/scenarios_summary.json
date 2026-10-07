@@ -1,0 +1,106 @@
+{
+  "commercial": [
+    {
+      "family": "commercial",
+      "scenario": "baseline",
+      "description": "No change",
+      "net_sales_multiplier": 1.0,
+      "total_net_sales": 13494400.74,
+      "total_product_contribution": 8771360.481,
+      "total_cts": 1350000.0,
+      "total_customer_contribution": 7421360.481,
+      "delta_customer_contribution": 0.0,
+      "n_positive": 95856,
+      "n_negative": 1463
+    },
+    {
+      "family": "commercial",
+      "scenario": "price_up_5pct",
+      "description": "Price +5% with product variable cost held fixed in BRL",
+      "net_sales_multiplier": 1.05,
+      "total_net_sales": 14169120.777,
+      "total_product_contribution": 9446080.518,
+      "total_cts": 1350000.0,
+      "total_customer_contribution": 8096080.518,
+      "delta_customer_contribution": 674720.037,
+      "n_positive": 96105,
+      "n_negative": 1214
+    },
+    {
+      "family": "commercial",
+      "scenario": "discount_reduction",
+      "description": "Effective net sales improvement of 3% via lower discounts/rebates",
+      "net_sales_multiplier": 1.03,
+      "total_net_sales": 13899232.762,
+      "total_product_contribution": 9034501.295,
+      "total_cts": 1350000.0,
+      "total_customer_contribution": 7684501.295,
+      "delta_customer_contribution": 263140.814,
+      "n_positive": 95978,
+      "n_negative": 1341
+    },
+    {
+      "family": "commercial",
+      "scenario": "price_down_pressure",
+      "description": "Competitive price pressure: net sales -4%",
+      "net_sales_multiplier": 0.96,
+      "total_net_sales": 12954624.710,
+      "total_product_contribution": 8420506.062,
+      "total_cts": 1350000.0,
+      "total_customer_contribution": 7070506.062,
+      "delta_customer_contribution": -350854.419,
+      "n_positive": 95735,
+      "n_negative": 1584
+    }
+  ],
+  "service_model": [
+    {
+      "family": "service_model",
+      "scenario": "baseline",
+      "description": "Current service model",
+      "total_product_contribution": 8771360.481,
+      "total_cts": 1350000.0,
+      "total_customer_contribution": 7421360.481,
+      "delta_customer_contribution": 0.0,
+      "delta_cts": 0.0,
+      "n_positive": 95856,
+      "n_negative": 1463
+    },
+    {
+      "family": "service_model",
+      "scenario": "lean_delivery",
+      "description": "Distribution -20%, Order Handling -10%",
+      "total_product_contribution": 8771360.481,
+      "total_cts": 1236500.0,
+      "total_customer_contribution": 7534860.481,
+      "delta_customer_contribution": 113500.0,
+      "delta_cts": -113500.0,
+      "n_positive": 96206,
+      "n_negative": 1113
+    },
+    {
+      "family": "service_model",
+      "scenario": "premium_service",
+      "description": "Distribution +25%, Order Handling +15%",
+      "total_product_contribution": 8771360.481,
+      "total_cts": 1577500.0,
+      "total_customer_contribution": 7193860.481,
+      "delta_customer_contribution": -227500.0,
+      "delta_cts": 227500.0,
+      "n_positive": 95052,
+      "n_negative": 2267
+    },
+    {
+      "family": "service_model",
+      "scenario": "returns_tightening",
+      "description": "Returns & Waste -40%",
+      "total_product_contribution": 8771360.481,
+      "total_cts": 1314000.0,
+      "total_customer_contribution": 7457360.481,
+      "delta_customer_contribution": 36000.0,
+      "delta_cts": -36000.0,
+      "n_positive": 95857,
+      "n_negative": 1462
+    }
+  ]
+}
