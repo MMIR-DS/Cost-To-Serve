@@ -1,0 +1,9 @@
+{
+  "segment_counts": {
+    "positive": 95856,
+    "economic_negative": 1005,
+    "non_fulfillment_only": 458
+  },
+  "economic_negative_total_brl": -5404.424730898201,
+  "non_fulfillment_total_brl": -97996.35701275042
+}
