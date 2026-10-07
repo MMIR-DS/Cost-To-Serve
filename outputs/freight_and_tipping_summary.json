@@ -1,0 +1,11 @@
+{
+  "headline": "Economic exposure is small under marketplace-like baselines (~R$5.4k economic CM negatives; 101 pass-through order negatives). Non-fulfillment-only months are 31% of negative months; the ~95% of negative dollars on those months is mechanical (Returns pool × zero revenue), not an economic finding. Material sales exposure requires thinner margins and/or much higher CTS — see tipping grids.",
+  "freight_cases": [
+    {"case": "V1_no_credit_modeled_pool", "negative_orders": 1029, "negative_pct_orders": 1.047872177924419, "negative_total_brl": -4462.922385108824, "sales_exposed_pct": 0.16707114628048314},
+    {"case": "pass_through", "negative_orders": 101, "negative_pct_orders": 0.10285237120540942, "negative_total_brl": -778.7159791710233, "sales_exposed_pct": 0.02733118773527693},
+    {"case": "modeled_pool_with_credit", "negative_orders": 10, "negative_pct_orders": 0.010183403089644497, "negative_total_brl": -58.22242851413811, "sales_exposed_pct": 0.0029944271537914917},
+    {"case": "subsidized_150pct", "negative_orders": 3690, "negative_pct_orders": 3.7576757400788194, "negative_total_brl": -19935.748437240585, "sales_exposed_pct": 0.6551418747921369}
+  ],
+  "wording": "31% of negative months; ~95% of negative dollars is mechanical Returns-pool allocation",
+  "returns_pool_per_line": {"half": 91.07468123861567, "base": 182.14936247723134, "double": 364.29872495446267}
+}

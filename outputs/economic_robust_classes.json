@@ -1,0 +1,32 @@
+{
+  "universe": "economic_customer_months_only",
+  "cost_structure": "pass_through_freight_reference",
+  "returns_allocation": "full_cm_denominator_then_subset_economic",
+  "returns_per_canceled_line": 182.14936247723134,
+  "total_canceled_lines": 549.0,
+  "mixed_months_with_cancels": 9,
+  "mixed_canceled_lines": 11.0,
+  "returns_allocated_to_mixed_months_brl": 2003.6429872495448,
+  "n_economic": 96861,
+  "n_compared": 96861,
+  "robust_positive": 96438,
+  "robust_negative": 21,
+  "sensitive": 402,
+  "robust_negative_mixed_with_cancels": 7,
+  "baseline_negative_pass_through_cm": 104,
+  "baseline_negative_pass_through_no_returns_cm": 96,
+  "baseline_negative_v1_sensitivity": 1005,
+  "scenarios_used": [
+    "pt_baseline",
+    "pt_cogs_25",
+    "pt_cogs_45",
+    "pt_ohwh_relief",
+    "pt_ohwh_pressure",
+    "pt_best_corner",
+    "pt_worst_corner",
+    "pt_oh_on_orders",
+    "pt_wh_on_volume"
+  ],
+  "note": "Returns allocated on full CM (all canceled lines), then economic subset. robust_negative_mixed_with_cancels counts robust negatives that are mixed months (active + canceled). Order-level pass-through excludes returns by construction.",
+  "baseline_negative_pass_through": 104
+}
