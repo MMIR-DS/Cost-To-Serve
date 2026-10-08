@@ -154,6 +154,7 @@ if cm is None:
 # ---------------------------------------------------------------------------
 if page.startswith("1"):
     st.title("Executive summary")
+    st.caption("The question is not whether service costs exist — it is whether they change the economic decision.")
     hero(
         "Under Neutral Freight Reference, Modeled service cost is a small perturbation",
         "Ranks stay close to revenue; only a thin tail is robustly negative. The tipping grid shows where that stops being true.",
@@ -178,10 +179,10 @@ if page.startswith("1"):
     sign_flips = rank.get("what_allocation_changes", {}).get("sign_flips_vs_product_contribution_only") if rank else None
 
     c1, c2, c3, c4 = st.columns(4)
-    c1.metric("Neutral Freight neg. orders", f"{pt_neg_orders:,}" if pt_neg_orders is not None else "—")
-    c2.metric("% sales exposed (reference)", fmt_pct(pt_sales_exp, 3))
-    c3.metric("Robust positive", f"{robust_pos:,} ({fmt_pct(robust_pos_pct, 2)})")
-    c4.metric("Spearman contrib vs sales", f"{spearman:.3f}" if spearman is not None else "—")
+    c1.metric("Negative orders — reference", f"{pt_neg_orders:,}" if pt_neg_orders is not None else "—")
+    c2.metric("Sales exposed — reference", fmt_pct(pt_sales_exp, 3))
+    c3.metric("Robustly positive", fmt_pct(robust_pos_pct, 2))
+    c4.metric("Contribution ↔ Sales rank", f"{spearman:.3f}" if spearman is not None else "—")
 
     st.markdown("#### What the model actually finds")
     st.write(
@@ -215,15 +216,22 @@ elif page.startswith("2"):
         st.error("Financial bridge columns are missing from the processed customer-month output.")
         st.stop()
 
-    bridge = pd.DataFrame(
-        {
-            "step": ["Net Sales", "Product Contribution", "Cost-to-Serve", "Customer Contribution"],
-            "value": [net, pc, cts, cc],
-        }
-    )
-    fig = px.bar(bridge, x="step", y="value", color="step", color_discrete_sequence=[C["ref"], C["pos"], C["accent"], C["ref"]])
-    fig.update_layout(**PLOTLY_LAYOUT, showlegend=False, yaxis_title="BRL")
+    st.subheader("Where the economics change")
+    fig = go.Figure(go.Waterfall(
+        orientation="v",
+        measure=["absolute", "relative", "total", "relative", "total"],
+        x=["Net Sales", "− Product Variable Cost", "Product Contribution", "− Cost-to-Serve", "Customer Contribution"],
+        y=[net, -(net - pc), 0, -cts, 0],
+        connector={"line": {"color": C["grid"]}},
+        increasing={"marker": {"color": C["pos"]}},
+        decreasing={"marker": {"color": C["neg"]}},
+        totals={"marker": {"color": C["ref"]}},
+        text=[fmt_brl(net), fmt_brl(-(net-pc)), fmt_brl(pc), fmt_brl(-cts), fmt_brl(cc)],
+        textposition="outside",
+    ))
+    fig.update_layout(**PLOTLY_LAYOUT, showlegend=False, yaxis_title="BRL", xaxis_title=None, height=470)
     st.plotly_chart(fig, use_container_width=True)
+    st.caption("Observed net sales are the starting point; product cost and Cost-to-Serve are Modeled. Customer Contribution = Product Contribution − Modeled CTS.")
 
     m1, m2, m3, m4 = st.columns(4)
     m1.metric("Net Sales", fmt_brl(net))
@@ -243,11 +251,24 @@ elif page.startswith("3"):
     )
     if honest:
         cm_h = honest.get("cm", {})
+        baseline = cm_h.get("baseline_negative", 0)
+        mechanical = cm_h.get("non_fulfillment_only_negative", 0)
+        economic = cm_h.get("economic_negative", 0)
+        economic_dollars = cm_h.get("economic_negative_total_brl")
+        st.subheader("From apparent negative to economic negative")
+        d = pd.DataFrame({
+            "stage": ["All baseline negatives", "Mechanical / non-fulfillment", "Economic negatives"],
+            "count": [baseline, mechanical, economic],
+        })
+        fig = px.bar(d, x="stage", y="count", text="count")
+        fig.update_traces(marker_color=C["ref"], texttemplate="%{text:,}", textposition="outside")
+        fig.update_layout(**PLOTLY_LAYOUT, showlegend=False, yaxis_title="Customer-months", xaxis_title=None, height=360)
+        st.plotly_chart(fig, use_container_width=True)
         c1, c2, c3 = st.columns(3)
-        c1.metric("Baseline negative CM", f"{cm_h.get('baseline_negative', '—'):,}")
-        c2.metric("Non-fulfillment only", f"{cm_h.get('non_fulfillment_only_negative', '—'):,}")
-        c3.metric("Economic negative $", fmt_brl(cm_h.get("economic_negative_total_brl")))
-        st.caption("Non-fulfillment negatives are mechanical (zero revenue + returns pool).")
+        c1.metric("Apparent negatives", f"{baseline:,}")
+        c2.metric("Mechanical / non-fulfillment", f"{mechanical:,}")
+        c3.metric("Economic negatives", f"{economic:,}")
+        st.info(f"Economic-negative contribution totals **{fmt_brl(economic_dollars)}**. The larger apparent-negative set should not be interpreted as customer economics.")
     else:
         st.info("Run honest_economics to populate this page.")
 
@@ -270,18 +291,26 @@ elif page.startswith("4"):
     if scenarios:
         comm = pd.DataFrame(scenarios.get("commercial", []))
         serv = pd.DataFrame(scenarios.get("service_model", []))
-        if len(comm):
-            st.subheader("Commercial terms")
-            st.dataframe(
-                comm[["scenario", "description", "delta_customer_contribution", "n_negative"]],
-                use_container_width=True,
-            )
-        if len(serv):
-            st.subheader("Service model")
-            st.dataframe(
-                serv[["scenario", "description", "delta_customer_contribution", "delta_cts", "n_negative"]],
-                use_container_width=True,
-            )
+        def scenario_cards(df, title):
+            if df.empty:
+                return
+            st.subheader(title)
+            cols = st.columns(min(3, len(df)))
+            for i, (_, row) in enumerate(df.iterrows()):
+                with cols[i % len(cols)]:
+                    with st.container(border=True):
+                        st.markdown(f"**{row.get('scenario', 'Scenario')}**")
+                        st.caption(str(row.get('description', '')))
+                        delta = row.get("delta_customer_contribution")
+                        st.metric("Contribution impact", fmt_brl(delta))
+                        if "delta_cts" in row.index:
+                            st.caption(f"CTS impact: {fmt_brl(row.get('delta_cts'))} · Negative customer-months: {int(row.get('n_negative', 0)):,}")
+                        else:
+                            st.caption(f"Negative customer-months: {int(row.get('n_negative', 0)):,}")
+        scenario_cards(comm, "Commercial terms")
+        scenario_cards(serv, "Service model")
+        st.divider()
+        st.caption("Detailed scenario tables remain available in the generated outputs; these cards surface the decision-level signal first.")
     else:
         st.info("Run decision_scenarios to populate this page.")
 
@@ -290,6 +319,7 @@ elif page.startswith("4"):
 # ---------------------------------------------------------------------------
 elif page.startswith("5"):
     st.title("Robustness & tipping — Neutral Freight Reference")
+    st.caption("How much can the assumptions move before service economics become a material commercial issue?")
     hero(
         "Pass-through reference · economic-only classes · tipping grid",
         "At baseline, sales exposed ≈ 0.027%. The tipping grid shows how exposure changes as modeled COGS and OH+WH intensity increase.",
