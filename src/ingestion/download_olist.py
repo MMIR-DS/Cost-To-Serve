@@ -12,6 +12,7 @@ from pathlib import Path
 import urllib.request
 import sys
 import hashlib
+import zipfile
 
 ROOT = Path(__file__).resolve().parents[2]
 RAW_DIR = ROOT / "data" / "raw" / "olist"
@@ -52,6 +53,7 @@ EXPECTED_SHA256 = {
 GITHUB_RAW_BASE = (
     "https://raw.githubusercontent.com/HarshGupta-DS/E-Commerce_Analysis/main"
 )
+KAGGLE_ZIP = "https://www.kaggle.com/api/v1/datasets/download/olistbr/brazilian-ecommerce"
 OFFICIAL_KAGGLE = "https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce"
 
 
@@ -114,14 +116,31 @@ def ensure_olist_data(raw_dir: Path = RAW_DIR, include_optional: bool = False) -
     to_get = [f for f in files if not (raw_dir / f).exists()]
 
     if to_get:
-        print(f"Missing {len(to_get)} file(s). Downloading from public mirror…")
-        print(f"Official source (preferred): {OFFICIAL_KAGGLE}")
-        for name in to_get:
-            url = f"{GITHUB_RAW_BASE}/{name}"
-            try:
-                _download(url, raw_dir / name)
-            except Exception as e:
-                print(f"  FAILED {name}: {e}", file=sys.stderr)
+        print(f"Missing {len(to_get)} file(s). Trying official Kaggle dataset first…")
+        print(f"Official source: {OFFICIAL_KAGGLE}")
+        zip_path = raw_dir / "_olist_kaggle.zip"
+        try:
+            _download(KAGGLE_ZIP, zip_path)
+            with zipfile.ZipFile(zip_path) as zf:
+                names = set(zf.namelist())
+                for name in files:
+                    if name in names and not (raw_dir / name).exists():
+                        with zf.open(name) as src, open(raw_dir / name, "wb") as dst:
+                            dst.write(src.read())
+            zip_path.unlink(missing_ok=True)
+        except Exception as e:
+            print(f"  Kaggle download failed: {e}", file=sys.stderr)
+            zip_path.unlink(missing_ok=True)
+
+        still = [f for f in files if not (raw_dir / f).exists()]
+        if still:
+            print(f"Falling back to public GitHub mirror for {len(still)} file(s)…")
+            for name in still:
+                url = f"{GITHUB_RAW_BASE}/{name}"
+                try:
+                    _download(url, raw_dir / name)
+                except Exception as e:
+                    print(f"  FAILED {name}: {e}", file=sys.stderr)
         still = missing_required(raw_dir)
         if still:
             raise RuntimeError(
