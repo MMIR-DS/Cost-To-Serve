@@ -10,6 +10,8 @@ import pandas as pd
 import numpy as np
 import json
 
+from src.cost_to_serve.config import PRODUCT_COST_BASELINE, PRODUCT_COST_RANGE
+
 PROCESSED = Path(__file__).resolve().parents[2] / "data" / "processed"
 OUTPUTS = Path(__file__).resolve().parents[2] / "outputs"
 OUTPUTS.mkdir(parents=True, exist_ok=True)
@@ -18,8 +20,8 @@ ASSUMPTIONS = {
     "ASSUMP-001": {
         "category": "Product Cost",
         "description": "Product variable cost as percentage of Net Sales (baseline).",
-        "value": 0.35,
-        "range": [0.25, 0.45],
+        "value": PRODUCT_COST_BASELINE,
+        "range": list(PRODUCT_COST_RANGE),
         "rationale": "Actual COGS unavailable in public dataset. 35% is a defensible mid-range for multi-category marketplace goods.",
         "source": "Industry heuristic + project design",
         "data_status": "Modeled",
