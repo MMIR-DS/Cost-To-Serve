@@ -65,7 +65,7 @@ They exist to prevent the false inference that “negative contribution → fire
 | Drivers | Primary vs Alternative set |
 | Operating regimes | Standard, Freight-Heavy, Handling-Heavy, High-Return |
 
-Outputs: Contribution range, Break-even range, Sign stability, Rank stability.
+Outputs: contribution range, break-even range, sign stability, and rank stability. Economic-only robust classes are the preferred decision lens because full-CM stability is dominated by the large positive mass.
 
 ---
 
