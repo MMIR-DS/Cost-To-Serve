@@ -5,14 +5,14 @@
   "priors": {
     "product_cost_rate": "Uniform(0.25, 0.45)",
     "oh_wh_scale": "Uniform(0.85, 1.25)",
-    "oh_wh_scale_rationale": "Asymmetric band around 1.0 (0.85–1.25) = mild relief vs more room for service pressure; illustrative, not estimated from data",
-    "note": "Independent uniforms — illustrative uncertainty, not estimated posteriors"
+    "oh_wh_scale_rationale": "Asymmetric band around 1.0 (0.85\u20131.25) = mild relief vs more room for service pressure; illustrative, not estimated from data",
+    "note": "Independent uniforms \u2014 illustrative uncertainty, not estimated posteriors"
   },
   "economic_negative_cm_count": {
     "mean": 143.005,
     "pctile_05_of_simulation": 65.75,
     "pctile_50_of_simulation": 125.0,
-    "pctile_95_of_simulation": 255.05,
+    "pctile_95_of_simulation": 255.04999999999998,
     "min": 54,
     "max": 312
   },
@@ -29,9 +29,21 @@
     "p95_over_baseline": 2.452403846153846
   },
   "returns_pool_stress": {
-    "x0.5": {"returns_pool_brl": 50000.0, "economic_negative_cm": 100, "returns_per_canceled_line": 91.07468123861567},
-    "x1.0": {"returns_pool_brl": 100000.0, "economic_negative_cm": 104, "returns_per_canceled_line": 182.14936247723134},
-    "x2.0": {"returns_pool_brl": 200000.0, "economic_negative_cm": 105, "returns_per_canceled_line": 364.29872495446267}
+    "x0.5": {
+      "returns_pool_brl": 50000.0,
+      "economic_negative_cm": 100,
+      "returns_per_canceled_line": 91.07468123861567
+    },
+    "x1.0": {
+      "returns_pool_brl": 100000.0,
+      "economic_negative_cm": 104,
+      "returns_per_canceled_line": 182.14936247723134
+    },
+    "x2.0": {
+      "returns_pool_brl": 200000.0,
+      "economic_negative_cm": 105,
+      "returns_per_canceled_line": 364.29872495446267
+    }
   },
-  "interpretation": "Under Neutral Freight and wide Modeled priors, economic-negative customer-months remain a thin tail (median 125 ≈ 1.20× baseline 104; p95 255 ≈ 2.45× baseline). The distribution is right-skewed: negative counts rise faster than linearly as product-cost rate increases. Returns-pool ×2 changes the count only modestly (see returns_pool_stress)."
+  "interpretation": "Under Neutral Freight and wide Modeled priors, economic-negative customer-months remain a thin tail (median 125 \u2248 1.20\u00d7 baseline 104; p95 255 \u2248 2.45\u00d7 baseline). The distribution is right-skewed: negative counts rise faster than linearly as product-cost rate increases. Returns-pool \u00d72 changes the count only modestly (see returns_pool_stress)."
 }

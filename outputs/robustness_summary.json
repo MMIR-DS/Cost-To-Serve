@@ -1,49 +1,149 @@
 {
   "product_cost": [
-    {"scenario_type": "product_cost", "scenario": "low", "product_cost_pct": 0.25, "n_positive": 96850, "n_negative": 469},
-    {"scenario_type": "product_cost", "scenario": "baseline", "product_cost_pct": 0.35, "n_positive": 95856, "n_negative": 1463},
-    {"scenario_type": "product_cost", "scenario": "high", "product_cost_pct": 0.45, "n_positive": 94420, "n_negative": 2899}
+    {
+      "scenario_type": "product_cost",
+      "scenario": "low",
+      "total_customer_contribution": 8770800.555,
+      "n_positive": 96272,
+      "n_negative": 1047,
+      "product_cost_pct": 0.25
+    },
+    {
+      "scenario_type": "product_cost",
+      "scenario": "baseline",
+      "total_customer_contribution": 7421360.481000001,
+      "n_positive": 95856,
+      "n_negative": 1463,
+      "product_cost_pct": 0.35
+    },
+    {
+      "scenario_type": "product_cost",
+      "scenario": "high",
+      "total_customer_contribution": 6071920.407,
+      "n_positive": 95137,
+      "n_negative": 2182,
+      "product_cost_pct": 0.45
+    }
   ],
   "pool_size": [
-    {"scenario_type": "pool_size", "scenario": "baseline", "n_positive": 95856, "n_negative": 1463},
-    {"scenario_type": "pool_size", "scenario": "cost_pressure", "n_positive": 95045, "n_negative": 2274},
-    {"scenario_type": "pool_size", "scenario": "cost_relief", "n_positive": 96280, "n_negative": 1039}
+    {
+      "scenario_type": "pool_size",
+      "scenario": "baseline",
+      "total_customer_contribution": 7421360.481000001,
+      "n_positive": 95856,
+      "n_negative": 1463
+    },
+    {
+      "scenario_type": "pool_size",
+      "scenario": "cost_pressure",
+      "total_customer_contribution": 7151360.481000001,
+      "n_positive": 95045,
+      "n_negative": 2274
+    },
+    {
+      "scenario_type": "pool_size",
+      "scenario": "cost_relief",
+      "total_customer_contribution": 7623860.481000001,
+      "n_positive": 96308,
+      "n_negative": 1011
+    }
   ],
   "driver": [
-    {"scenario_type": "driver", "scenario": "primary", "n_positive": 95856, "n_negative": 1463},
-    {"scenario_type": "driver", "scenario": "alternative", "n_positive": 95790, "n_negative": 1529}
+    {
+      "scenario_type": "driver",
+      "scenario": "primary",
+      "total_customer_contribution": 7421360.481000001,
+      "n_positive": 95856,
+      "n_negative": 1463
+    },
+    {
+      "scenario_type": "driver",
+      "scenario": "alternative",
+      "total_customer_contribution": 7421360.481000001,
+      "n_positive": 95935,
+      "n_negative": 1384
+    }
   ],
   "operating_regimes": [
-    {"scenario_type": "operating_regime", "scenario": "standard", "n_positive": 95856, "n_negative": 1463},
-    {"scenario_type": "operating_regime", "scenario": "freight_heavy", "n_positive": 94948, "n_negative": 2371},
-    {"scenario_type": "operating_regime", "scenario": "handling_heavy", "n_positive": 95400, "n_negative": 1919},
-    {"scenario_type": "operating_regime", "scenario": "high_return", "n_positive": 95840, "n_negative": 1479}
+    {
+      "scenario_type": "operating_regime",
+      "scenario": "standard",
+      "total_customer_contribution": 7421360.481000001,
+      "n_positive": 95856,
+      "n_negative": 1463,
+      "description": "Normal operating conditions"
+    },
+    {
+      "scenario_type": "operating_regime",
+      "scenario": "freight_heavy",
+      "total_customer_contribution": 7181360.481000001,
+      "n_positive": 94948,
+      "n_negative": 2371,
+      "description": "Transportation more demanding"
+    },
+    {
+      "scenario_type": "operating_regime",
+      "scenario": "handling_heavy",
+      "total_customer_contribution": 7286360.481000001,
+      "n_positive": 95495,
+      "n_negative": 1824,
+      "description": "Order complexity / handling intensity up"
+    },
+    {
+      "scenario_type": "operating_regime",
+      "scenario": "high_return",
+      "total_customer_contribution": 7371360.481000001,
+      "n_positive": 95856,
+      "n_negative": 1463,
+      "description": "Elevated non-fulfillment / returns pressure"
+    }
   ],
   "combined_corners": [
-    {"scenario_type": "combined_corner", "scenario": "best", "product_cost_pct": 0.25, "pool_multiplier": 0.85, "n_negative": 350},
-    {"scenario_type": "combined_corner", "scenario": "baseline", "product_cost_pct": 0.35, "pool_multiplier": 1.0, "n_negative": 1463},
-    {"scenario_type": "combined_corner", "scenario": "worst", "product_cost_pct": 0.45, "pool_multiplier": 1.2, "n_negative": 3594}
+    {
+      "scenario_type": "combined_corner",
+      "scenario": "best",
+      "total_customer_contribution": 8973300.555,
+      "n_positive": 96532,
+      "n_negative": 787,
+      "product_cost_pct": 0.25,
+      "pool_multiplier": 0.85
+    },
+    {
+      "scenario_type": "combined_corner",
+      "scenario": "baseline",
+      "total_customer_contribution": 7421360.481000001,
+      "n_positive": 95856,
+      "n_negative": 1463,
+      "product_cost_pct": 0.35,
+      "pool_multiplier": 1.0
+    },
+    {
+      "scenario_type": "combined_corner",
+      "scenario": "worst",
+      "total_customer_contribution": 5801920.407,
+      "n_positive": 93725,
+      "n_negative": 3594,
+      "product_cost_pct": 0.45,
+      "pool_multiplier": 1.2
+    }
   ],
   "stability": {
     "sign_stability": {
-      "prodcost_low": 0.9957,
-      "prodcost_high": 0.9926,
-      "pool_cost_pressure": 0.9917,
-      "pool_cost_relief": 0.9954,
-      "regime_freight_heavy": 0.9907,
-      "regime_handling_heavy": 0.9940,
-      "regime_high_return": 0.99999
+      "prodcost_low": 0.9957253979181866,
+      "prodcost_baseline": 1.0,
+      "prodcost_high": 0.9926119257287889,
+      "pool_baseline": 1.0,
+      "pool_cost_pressure": 0.9916665810376185,
+      "pool_cost_relief": 0.9953554804303374
     },
     "rank_correlation": {
-      "prodcost_low": 0.9996,
-      "prodcost_high": 0.9992,
-      "pool_cost_pressure": 0.9990,
-      "pool_cost_relief": 0.9995,
-      "regime_freight_heavy": 0.9992,
-      "regime_handling_heavy": 0.9986,
-      "regime_high_return": 0.99995
+      "prodcost_low": 0.9995830914645126,
+      "prodcost_baseline": 1.0,
+      "prodcost_high": 0.9992073581576307,
+      "pool_baseline": 1.0,
+      "pool_cost_pressure": 0.9990373662435057,
+      "pool_cost_relief": 0.9994825675180394
     },
-    "n_customer_months_compared": 97319,
-    "note": "Full-CM sign stability is dominated by the positive mass; prefer economic-only robust classes."
+    "note": "Full-CM sign stability is dominated by the large positive mass; prefer economic-only robust classes."
   }
 }
