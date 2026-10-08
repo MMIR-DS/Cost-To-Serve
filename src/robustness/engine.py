@@ -195,6 +195,7 @@ def _rank_corr(a: pd.Series, b: pd.Series) -> float:
 
 
 def _scenario_series(base_cm: pd.DataFrame) -> dict[str, pd.Series]:
+    """Return the core product-cost and pool-size robustness scenarios."""
     series = {}
     for label, pct in PRODUCT_COST_SCENARIOS.items():
         cm = _allocate_all_pools(
@@ -209,19 +210,11 @@ def _scenario_series(base_cm: pd.DataFrame) -> dict[str, pd.Series]:
         series[f"pool_{label}"] = _allocate_all_pools(
             base_cm.copy(), pool_defs
         )["customer_contribution"]
-
-    for label, reg in OPERATING_REGIMES.items():
-        pool_defs = deepcopy(COST_POOLS)
-        for k, m in reg["pool_multipliers"].items():
-            pool_defs[k]["pool_cost"] = COST_POOLS[k]["pool_cost"] * m
-        series[f"regime_{label}"] = _allocate_all_pools(
-            base_cm.copy(), pool_defs
-        )["customer_contribution"]
     return series
 
 
 def compute_sign_and_rank_stability(base_cm: pd.DataFrame) -> dict:
-    """Compare each robustness scenario with the baseline contribution vector."""
+    """Compare core robustness scenarios with the baseline contribution vector."""
     series = _scenario_series(base_cm)
     base = series["prodcost_baseline"]
     base_sign = np.sign(base.to_numpy())
@@ -233,14 +226,7 @@ def compute_sign_and_rank_stability(base_cm: pd.DataFrame) -> dict:
         sign_stability[name] = float((signs == base_sign).mean())
         rank_correlation[name] = _rank_corr(base, values)
 
-    all_same = np.ones(len(base), dtype=bool)
-    for values in series.values():
-        all_same &= np.sign(values.to_numpy()) == base_sign
-
     return {
-        "n_customer_months": int(len(base)),
-        "sign_stable_share": float(all_same.mean()),
-        "scenarios_compared": list(series.keys()),
         "sign_stability": sign_stability,
         "rank_correlation": rank_correlation,
         "note": (
