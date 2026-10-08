@@ -23,8 +23,9 @@ OUTPUTS = Path(__file__).resolve().parents[2] / "outputs"
 OUTPUTS.mkdir(parents=True, exist_ok=True)
 
 from src.cost_to_serve.pools_and_allocation import COST_POOLS, allocate_pool
+from src.cost_to_serve.config import PRODUCT_COST_BASELINE, PRODUCT_COST_RANGE
 
-PRODUCT_COST_SCENARIOS = {"low": 0.25, "baseline": 0.35, "high": 0.45}
+PRODUCT_COST_SCENARIOS = {"low": PRODUCT_COST_RANGE[0], "baseline": PRODUCT_COST_BASELINE, "high": PRODUCT_COST_RANGE[1]}
 
 POOL_SIZE_SCENARIOS = {
     "baseline": {k: 1.0 for k in COST_POOLS},
@@ -185,33 +186,68 @@ def run_combined_corners(base_cm: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def compute_sign_and_rank_stability(base_cm: pd.DataFrame) -> dict:
-    """Share of CMs that keep the same sign across product-cost and pool-size stresses."""
+def _rank_corr(a: pd.Series, b: pd.Series) -> float:
+    """Spearman correlation without a scipy dependency."""
+    ar = a.rank(method="average")
+    br = b.rank(method="average")
+    corr = ar.corr(br)
+    return float(corr) if pd.notna(corr) else 1.0
+
+
+def _scenario_series(base_cm: pd.DataFrame) -> dict[str, pd.Series]:
     series = {}
     for label, pct in PRODUCT_COST_SCENARIOS.items():
-        cm = _recompute_product(base_cm, pct)
-        cm = _allocate_all_pools(cm, deepcopy(COST_POOLS))
-        series[f"pc_{label}"] = np.sign(cm["customer_contribution"].values)
+        cm = _allocate_all_pools(
+            _recompute_product(base_cm, pct), deepcopy(COST_POOLS)
+        )
+        series[f"prodcost_{label}"] = cm["customer_contribution"]
+
     for label, mults in POOL_SIZE_SCENARIOS.items():
-        cm = base_cm.copy()
         pool_defs = deepcopy(COST_POOLS)
         for k in pool_defs:
             pool_defs[k]["pool_cost"] = COST_POOLS[k]["pool_cost"] * mults[k]
-        cm = _allocate_all_pools(cm, pool_defs)
-        series[f"pool_{label}"] = np.sign(cm["customer_contribution"].values)
+        series[f"pool_{label}"] = _allocate_all_pools(
+            base_cm.copy(), pool_defs
+        )["customer_contribution"]
 
-    base_sign = series["pc_baseline"]
-    n = len(base_sign)
-    all_same = np.ones(n, dtype=bool)
-    for s in series.values():
-        all_same &= s == base_sign
+    for label, reg in OPERATING_REGIMES.items():
+        pool_defs = deepcopy(COST_POOLS)
+        for k, m in reg["pool_multipliers"].items():
+            pool_defs[k]["pool_cost"] = COST_POOLS[k]["pool_cost"] * m
+        series[f"regime_{label}"] = _allocate_all_pools(
+            base_cm.copy(), pool_defs
+        )["customer_contribution"]
+    return series
+
+
+def compute_sign_and_rank_stability(base_cm: pd.DataFrame) -> dict:
+    """Compare each robustness scenario with the baseline contribution vector."""
+    series = _scenario_series(base_cm)
+    base = series["prodcost_baseline"]
+    base_sign = np.sign(base.to_numpy())
+
+    sign_stability = {}
+    rank_correlation = {}
+    for name, values in series.items():
+        signs = np.sign(values.to_numpy())
+        sign_stability[name] = float((signs == base_sign).mean())
+        rank_correlation[name] = _rank_corr(base, values)
+
+    all_same = np.ones(len(base), dtype=bool)
+    for values in series.values():
+        all_same &= np.sign(values.to_numpy()) == base_sign
+
     return {
-        "n_customer_months": int(n),
+        "n_customer_months": int(len(base)),
         "sign_stable_share": float(all_same.mean()),
         "scenarios_compared": list(series.keys()),
-        "note": "Full-CM sign stability is dominated by the large positive mass; prefer economic-only robust classes.",
+        "sign_stability": sign_stability,
+        "rank_correlation": rank_correlation,
+        "note": (
+            "Full-CM sign stability is dominated by the large positive mass; "
+            "prefer economic-only robust classes."
+        ),
     }
-
 
 def run_full_robustness():
     print("Loading baseline Customer × Month CTS …")
