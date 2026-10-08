@@ -155,6 +155,7 @@ if cm is None:
 if page.startswith("1"):
     st.title("Executive summary")
     st.caption("The question is not whether service costs exist — it is whether they change the economic decision.")
+    st.info("**Bottom line:** Under marketplace-like assumptions, Cost-to-Serve does not materially change the customer-level economic picture; the bigger analytical risk is confusing mechanical fulfillment losses with genuine customer economics.")
     hero(
         "Under Neutral Freight Reference, Modeled service cost is a small perturbation",
         "Ranks stay close to revenue; only a thin tail is robustly negative. The tipping grid shows where that stops being true.",
@@ -232,6 +233,7 @@ elif page.startswith("2"):
     fig.update_layout(**PLOTLY_LAYOUT, showlegend=False, yaxis_title="BRL", xaxis_title=None, height=470)
     st.plotly_chart(fig, use_container_width=True)
     st.caption("Observed net sales are the starting point; product cost and Cost-to-Serve are Modeled. Customer Contribution = Product Contribution − Modeled CTS.")
+    st.info("**Story:** The waterfall shows exactly where service cost enters the economics — and why the baseline conclusion is a relatively small change rather than a wholesale repricing of customer value.")
 
     m1, m2, m3, m4 = st.columns(4)
     m1.metric("Net Sales", fmt_brl(net))
@@ -268,7 +270,8 @@ elif page.startswith("3"):
         c1.metric("Apparent negatives", f"{baseline:,}")
         c2.metric("Mechanical / non-fulfillment", f"{mechanical:,}")
         c3.metric("Economic negatives", f"{economic:,}")
-        st.info(f"Economic-negative contribution totals **{fmt_brl(economic_dollars)}**. The larger apparent-negative set should not be interpreted as customer economics.")
+        st.info(f"**Key finding:** Economic-negative contribution totals **{fmt_brl(economic_dollars)}**. The larger apparent-negative set should not be interpreted as customer economics.")
+        st.caption("Interpretation: first classify the loss mechanism; only then use the result for customer-economics decisions.")
     else:
         st.info("Run honest_economics to populate this page.")
 
@@ -311,6 +314,7 @@ elif page.startswith("4"):
         scenario_cards(serv, "Service model")
         st.divider()
         st.caption("Detailed scenario tables remain available in the generated outputs; these cards surface the decision-level signal first.")
+        st.info("**Decision lens:** Use these scenarios to identify where commercial terms or service intensity can change contribution — not simply to rank customers by modeled cost.")
     else:
         st.info("Run decision_scenarios to populate this page.")
 
@@ -320,6 +324,7 @@ elif page.startswith("4"):
 elif page.startswith("5"):
     st.title("Robustness & tipping — Neutral Freight Reference")
     st.caption("How much can the assumptions move before service economics become a material commercial issue?")
+    st.info("**Stress-test question:** When do the baseline conclusions stop being reliable? The tipping grid shows the combinations of product-cost and service-intensity assumptions that make exposure materially larger.")
     hero(
         "Pass-through reference · economic-only classes · tipping grid",
         "At baseline, sales exposed ≈ 0.027%. The tipping grid shows how exposure changes as modeled COGS and OH+WH intensity increase.",
@@ -356,6 +361,7 @@ elif page.startswith("5"):
             )
             fig.update_layout(**PLOTLY_LAYOUT)
             st.plotly_chart(fig, use_container_width=True)
+    st.info("**Decision implication:** Do not use baseline Cost-to-Serve alone to exit customers. Investigate the robust-negative tail, separate fulfillment failures from recurring customer economics, and use the tipping grid when service-cost intensity becomes financially material.")
             st.caption("Values are % of net sales exposed (negative contribution). COGS above 45% is stress exploration.")
         else:
             st.dataframe(grid, use_container_width=True)
