@@ -1,3 +1,5 @@
+[![CI](https://github.com/MMIR-DS/Cost-To-Serve/actions/workflows/ci.yml/badge.svg)](https://github.com/MMIR-DS/Cost-To-Serve/actions/workflows/ci.yml)
+
 # Customer Contribution After Cost-to-Serve
 
 **Portfolio-grade analytical prototype** · Commercial Finance × Supply Chain × Business Analytics
