@@ -161,22 +161,34 @@ if page.startswith("1"):
     )
 
     # Headline KPIs from shipped outputs
-    pt_neg_orders = 101
-    pt_sales_exp = 0.00027
+    pt_neg_orders = None
+    pt_sales_exp = None
     if freight:
         for c in freight.get("freight_cases", []):
             if c.get("case") == "pass_through":
-                pt_neg_orders = c.get("negative_orders", pt_neg_orders)
-                pt_sales_exp = c.get("sales_exposed_pct", pt_sales_exp)
+                pt_neg_orders = c.get("negative_orders")
+                pt_sales_exp = c.get("sales_exposed_pct")
 
-    robust_neg = econ.get("robust_negative", 21) if econ else 21
-    robust_mixed = econ.get("robust_negative_mixed_with_cancels", 7) if econ else 7
+    robust_neg = econ.get("robust_negative", 0) if econ else 0
+    robust_pos = econ.get("robust_positive", 0) if econ else 0
+    sensitive = econ.get("sensitive", 0) if econ else 0
+    robust_total = econ.get("n_economic", 0) if econ else 0
+    robust_pos_pct = robust_pos / robust_total if robust_total else None
+    spearman = rank.get("pass_through", {}).get("spearman_contrib_vs_net_sales") if rank else None
+    sign_flips = rank.get("what_allocation_changes", {}).get("sign_flips_vs_product_contribution_only") if rank else None
 
     c1, c2, c3, c4 = st.columns(4)
-    c1.metric("Neutral Freight neg. orders", f"{pt_neg_orders:,}")
+    c1.metric("Neutral Freight neg. orders", f"{pt_neg_orders:,}" if pt_neg_orders is not None else "—")
     c2.metric("% sales exposed (reference)", fmt_pct(pt_sales_exp, 3))
-    c3.metric("Robust negative CM", f"{robust_neg} ({robust_mixed} mixed)")
-    c4.metric("Spearman contrib vs sales", "≈ 0.99" if rank else "—")
+    c3.metric("Robust positive", f"{robust_pos:,} ({fmt_pct(robust_pos_pct, 2)})")
+    c4.metric("Spearman contrib vs sales", f"{spearman:.3f}" if spearman is not None else "—")
+
+    st.markdown("#### What the model actually finds")
+    st.write(
+        f"- **Robustness:** {robust_pos:,} of {robust_total:,} economic customer-months are robustly positive; only {robust_neg} are robustly negative and {sensitive} are assumption-sensitive.\n"
+        f"- **Ranking:** pass-through contribution has Spearman correlation **{spearman:.3f}** with net sales; only {sign_flips} orders flip sign versus product contribution alone.\n"
+        "- **Decision implication:** the evidence does not support a broad customer-exit conclusion; use the tipping grid to identify where service economics become material."
+    )
 
     st.markdown("#### What this does **not** claim")
     st.write(
@@ -195,10 +207,13 @@ elif page.startswith("2"):
         "Product Contribution is not Gross Profit. CTS pools are Modeled.",
         [("Observed sales", "ref"), ("Modeled product cost & CTS", "accent")],
     )
-    net = float(cm["net_sales"].sum()) if "net_sales" in cm.columns else 13_494_400.74
-    pc = float(cm["product_contribution"].sum()) if "product_contribution" in cm.columns else 8_771_360.48
-    cts = float(cm["cost_to_serve"].sum()) if "cost_to_serve" in cm.columns else 1_350_000.0
-    cc = float(cm["customer_contribution"].sum()) if "customer_contribution" in cm.columns else pc - cts
+    net = float(cm["net_sales"].sum()) if "net_sales" in cm.columns else None
+    pc = float(cm["product_contribution"].sum()) if "product_contribution" in cm.columns else None
+    cts = float(cm["cost_to_serve"].sum()) if "cost_to_serve" in cm.columns else None
+    cc = float(cm["customer_contribution"].sum()) if "customer_contribution" in cm.columns else None
+    if any(v is None for v in (net, pc, cts, cc)):
+        st.error("Financial bridge columns are missing from the processed customer-month output.")
+        st.stop()
 
     bridge = pd.DataFrame(
         {
