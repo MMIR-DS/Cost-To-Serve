@@ -362,9 +362,9 @@ elif page.startswith("5"):
             fig.update_layout(**PLOTLY_LAYOUT)
             st.plotly_chart(fig, use_container_width=True)
             st.caption("Values are % of net sales exposed (negative contribution). COGS above 45% is stress exploration.")
-        st.info("**Decision implication:** Do not use baseline Cost-to-Serve alone to exit customers. Investigate the robust-negative tail, separate fulfillment failures from recurring customer economics, and use the tipping grid when service-cost intensity becomes financially material.")
         else:
             st.dataframe(grid, use_container_width=True)
+        st.info("**Decision implication:** Do not use baseline Cost-to-Serve alone to exit customers. Investigate the robust-negative tail, separate fulfillment failures from recurring customer economics, and use the tipping grid when service-cost intensity becomes financially material.")
     else:
         st.info("Run tipping_and_freight to populate the grid.")
 
