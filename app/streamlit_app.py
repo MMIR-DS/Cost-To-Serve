@@ -327,7 +327,7 @@ elif page.startswith("5"):
     st.info("**Stress-test question:** When do the baseline conclusions stop being reliable? The tipping grid shows the combinations of product-cost and service-intensity assumptions that make exposure materially larger.")
     hero(
         "Pass-through reference · economic-only classes · tipping grid",
-        "At baseline, sales exposed ≈ 0.027%. The tipping grid shows how exposure changes as modeled COGS and OH+WH intensity increase.",
+        "At baseline, sales exposed ≈ 2.733%. The tipping grid shows how exposure changes as modeled COGS and OH+WH intensity increase.",
         [("Reference structure", "ref"), ("COGS >45% = stress exploration", "accent")],
     )
 
