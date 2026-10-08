@@ -292,16 +292,20 @@ elif page.startswith("5"):
     st.title("Robustness & tipping — Neutral Freight Reference")
     hero(
         "Pass-through reference · economic-only classes · tipping grid",
-        "At baseline, sales exposed ≈ 0.027%. At ~3× OH+WH intensity, exposure rises to ~1.5% of sales.",
+        "At baseline, sales exposed ≈ 0.027%. The tipping grid shows how exposure changes as modeled COGS and OH+WH intensity increase.",
         [("Reference structure", "ref"), ("COGS >45% = stress exploration", "accent")],
     )
 
     if econ:
+        total = econ.get("n_economic", 0)
+        rp = econ.get("robust_positive", 0)
+        rn = econ.get("robust_negative", 0)
+        se = econ.get("sensitive", 0)
         c1, c2, c3, c4 = st.columns(4)
-        c1.metric("Robust positive", f"{econ.get('robust_positive', 0):,}")
-        c2.metric("Robust negative", f"{econ.get('robust_negative', 0):,}")
-        c3.metric("Sensitive", f"{econ.get('sensitive', 0):,}")
-        c4.metric("PT baseline neg. CM", f"{econ.get('baseline_negative_pass_through', 0):,}")
+        c1.metric("Robust positive", f"{rp:,} ({fmt_pct(rp / total, 2) if total else '—'})")
+        c2.metric("Robust negative", f"{rn:,}")
+        c3.metric("Sensitive", f"{se:,}")
+        c4.metric("PT baseline neg. CM", f"{econ.get('baseline_negative_pass_through_cm', 0):,}")
 
     grid_path = OUTPUTS / "tipping_grid_passthrough.csv"
     if grid_path.exists():
