@@ -48,7 +48,9 @@ def test_commercial_scenarios_keep_service_cost_fixed(baseline_customer_months):
     results = run_commercial_scenarios(baseline_customer_months)
     expected_cts = baseline_customer_months["cost_to_serve"].sum()
 
-    assert (results["total_cts"] == pytest.approx(expected_cts)).all()
+    assert all(
+        value == pytest.approx(expected_cts) for value in results["total_cts"]
+    )
 
 
 @pytest.mark.parametrize(
